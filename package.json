@@ -18,6 +18,13 @@
   },
   "homepage": "https://github.com/marioecg/feedback#readme",
   "dependencies": {
-    "parcel-bundler": "^1.12.4"
+    "gsap": "^3.6.1",
+    "lodash.debounce": "^4.0.8",
+    "parcel-bundler": "^1.12.4",
+    "three": "^0.129.0",
+    "tiny-emitter": "^2.1.0"
+  },
+  "devDependencies": {
+    "sass": "^1.34.0"
   }
 }
