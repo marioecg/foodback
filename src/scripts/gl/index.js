@@ -123,7 +123,7 @@ export default new class {
     const mat = new THREE.MeshNormalMaterial();
     this.box = new THREE.Mesh(geom, mat);
 
-    this.scene.add(this.box);
+    // this.scene.add(this.box);
   }
 
   resize() {
