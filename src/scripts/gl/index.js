@@ -6,7 +6,7 @@ import { Events } from '../events';
 import store from '../store';
 
 import defaultVert from './shaders/default.vert';
-import copyFrag from './shaders/copy.frag';
+import bufferFrag from './shaders/buffer.frag';
 import renderFrag from './shaders/render.frag';
 
 export default new class {
@@ -67,10 +67,8 @@ export default new class {
   }
 
   setupBufferScene() {
-    // Buffer scene
     this.bufferScene = new THREE.Scene();
 
-    // Render target options
     const targetOpts = {
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearMipMapLinearFilter,
@@ -78,24 +76,23 @@ export default new class {
       type: THREE.FloatType,
     };
 
-    // Render targets
     this.read = new THREE.WebGLRenderTarget(store.bounds.ww, store.bounds.wh, targetOpts);
     this.write = new THREE.WebGLRenderTarget(store.bounds.ww, store.bounds.wh, targetOpts);
   }
 
   initBufferScene() {
-    // Buffer 
     const bufferMaterial = new THREE.ShaderMaterial({
       vertexShader: defaultVert,
-      fragmentShader: copyFrag,
+      fragmentShader: bufferFrag,
       uniforms: {
         prevFrame: { value: this.read.texture },
       },
-      side: THREE.DoubleSide,
     });
 
-    const planeGeometry = new THREE.PlaneGeometry(2, 2);
-    this.bufferObject = new THREE.Mesh(planeGeometry, bufferMaterial);
+    const bufferGeometry = new THREE.PlaneGeometry(2, 2);
+
+    this.bufferObject = new THREE.Mesh(bufferGeometry, bufferMaterial);
+
     this.bufferScene.add(this.bufferObject);
   }
 
@@ -108,7 +105,6 @@ export default new class {
         resolution: { value: new THREE.Vector2(store.bounds.ww, store.bounds.wh) },
         backbuffer: { value: null },
       },
-      side: THREE.DoubleSide,
     });
 
     const geometry = new THREE.PlaneGeometry(2, 2);
@@ -141,19 +137,18 @@ export default new class {
 
     this.time = this.clock.getElapsedTime();  
 
-    this.quad.material.uniforms.time.value = this.time;
-
     // this.box.rotation.x = this.time;
     // this.box.rotation.y = this.time;
     
     this.bufferObject.material.uniforms.prevFrame.value = this.read.texture;
+    this.quad.material.uniforms.time.value = this.time;
 
-    // Save buffer current frame to ping
+    // Save buffer current frame
     this.renderer.setRenderTarget(this.write);
     this.renderer.render(this.bufferScene, this.camera);
     this.renderer.setRenderTarget(null);
     
-    // Swap ping and pong
+    // Swap read and write
     let temp = this.write;
     this.write = this.read;
     this.read = temp;

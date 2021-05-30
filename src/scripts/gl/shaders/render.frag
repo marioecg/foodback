@@ -7,7 +7,7 @@ uniform float time;
 varying vec2 vUv;
 
 void main() {
-	vec3 lastFrame = texture2D(backbuffer, vUv).rgb;
+	vec3 renderToScreen = texture2D(backbuffer, vUv).rgb;
 	
-	gl_FragColor = vec4(lastFrame, 1.0);
+	gl_FragColor = vec4(renderToScreen, 1.0);
 }
