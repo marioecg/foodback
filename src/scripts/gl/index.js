@@ -79,8 +79,8 @@ export default new class {
     };
 
     // Render targets
-    this.ping = new THREE.WebGLRenderTarget(store.bounds.ww, store.bounds.wh, targetOpts);
-    this.pong = new THREE.WebGLRenderTarget(store.bounds.ww, store.bounds.wh, targetOpts);
+    this.read = new THREE.WebGLRenderTarget(store.bounds.ww, store.bounds.wh, targetOpts);
+    this.write = new THREE.WebGLRenderTarget(store.bounds.ww, store.bounds.wh, targetOpts);
   }
 
   initBufferScene() {
@@ -89,7 +89,7 @@ export default new class {
       vertexShader: defaultVert,
       fragmentShader: copyFrag,
       uniforms: {
-        channel0: { value: this.pong.texture },
+        prevFrame: { value: this.read.texture },
       },
       side: THREE.DoubleSide,
     });
@@ -146,20 +146,20 @@ export default new class {
     // this.box.rotation.x = this.time;
     // this.box.rotation.y = this.time;
     
+    this.bufferObject.material.uniforms.prevFrame.value = this.read.texture;
+
     // Save buffer current frame to ping
-    this.renderer.setRenderTarget(this.ping);
+    this.renderer.setRenderTarget(this.write);
     this.renderer.render(this.bufferScene, this.camera);
     this.renderer.setRenderTarget(null);
-    this.renderer.clear();
     
     // Swap ping and pong
-    let temp = this.pong;
-    this.pong = this.ping;
-    this.ping = temp;
+    let temp = this.write;
+    this.write = this.read;
+    this.read = temp;
 
     // Update channels
-    this.quad.material.uniforms.backbuffer.value = this.ping.texture;
-    this.bufferObject.material.uniforms.channel0.value = this.pong.texture;
+    this.quad.material.uniforms.backbuffer.value = this.read.texture;
 
     // Render Main Scene
     this.renderer.render(this.scene, this.camera);
