@@ -1,7 +1,7 @@
 {
-  "name": "iknowhowifeel",
+  "name": "feedback",
   "version": "1.0.0",
-  "description": "Parcel quick setup to make one pagers",
+  "description": "Threejs ping-png / feedback setup",
   "main": "index.js",
   "scripts": {
     "start": "parcel index.html",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/marioecg/IknowhowIfeel.git"
+    "url": "git+https://github.com/marioecg/feedback.git"
   },
   "author": "marioecg",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/marioecg/IknowhowIfeel/issues"
+    "url": "https://github.com/marioecg/feedback/issues"
   },
-  "homepage": "https://github.com/marioecg/IknowhowIfeel#readme",
+  "homepage": "https://github.com/marioecg/feedback#readme",
   "dependencies": {
     "parcel-bundler": "^1.12.4"
   }
