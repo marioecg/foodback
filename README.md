@@ -1,2 +1,2 @@
-# IknowhowIfeel
-Parcel quick setup to make one pagers 📦
+# Feedback
+Exploring the ping pong / feedback technique using Threejs
