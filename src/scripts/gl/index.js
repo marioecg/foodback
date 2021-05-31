@@ -86,6 +86,7 @@ export default new class {
       fragmentShader: bufferFrag,
       uniforms: {
         prevFrame: { value: this.read.texture },
+        time: { value: 0 },
       },
     });
 
@@ -115,11 +116,18 @@ export default new class {
   }
 
   addElements() {
+    this.scene2 = new THREE.Scene();
+    this.camera2 = this.camera.clone();
+    this.camera2.position.set(0, 0, 5);
+
     const geom = new THREE.BoxGeometry(1);
-    const mat = new THREE.MeshNormalMaterial();
+    const mat = new THREE.MeshNormalMaterial({
+      transparent: true,
+      opacity: 0.5,
+    });
     this.box = new THREE.Mesh(geom, mat);
 
-    // this.scene.add(this.box);
+    this.scene2.add(this.box);
   }
 
   resize() {
@@ -129,7 +137,13 @@ export default new class {
     this.camera.aspect = width / height;
     this.renderer.setSize(width, height);
 
+    this.write.setSize(width, height);
+    this.read.setSize(width, height);
+
+    this.camera2.aspect = width / height;
+
     this.camera.updateProjectionMatrix();
+    this.camera2.updateProjectionMatrix();
   }
 
   render() {
@@ -137,15 +151,23 @@ export default new class {
 
     this.time = this.clock.getElapsedTime();  
 
-    // this.box.rotation.x = this.time;
-    // this.box.rotation.y = this.time;
+    this.box.rotation.x = this.time;
+    this.box.rotation.y = this.time;
+    // this.box.rotation.z = this.time; 
     
     this.bufferObject.material.uniforms.prevFrame.value = this.read.texture;
+    this.bufferObject.material.uniforms.time.value = this.time;
     this.quad.material.uniforms.time.value = this.time;
 
     // Save buffer current frame
     this.renderer.setRenderTarget(this.write);
     this.renderer.render(this.bufferScene, this.camera);
+
+    // Make another pass to 3D shapes
+    this.renderer.autoClearColor = false;
+    this.renderer.render(this.scene2, this.camera2);
+    this.renderer.autoClearColor = true;
+
     this.renderer.setRenderTarget(null);
     
     // Swap read and write

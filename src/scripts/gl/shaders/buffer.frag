@@ -1,14 +1,17 @@
 varying vec2 vUv;
+
 uniform sampler2D prevFrame;
-	
-vec2 rotate(vec2 v, float a) {
-	return mat2(cos(a), -sin(a), sin(a), cos(a))*v;
-}
+uniform float time;
 
 void main() {
-	vec4 inText = texture2D(prevFrame, vUv);
-  // vec4 inText2 = texture2D(prevFrame, vUv * 0.9);
-	inText.rgb += vec3(0.01, 0.0, 0.0);
-	
+	float scl = 0.97;
+
+	vec2 uv = vUv;
+	uv += -0.5;
+	uv *= scl;
+	uv += 0.5;
+
+	vec4 inText = texture2D(prevFrame, uv);
+  
 	gl_FragColor = inText;
 }
