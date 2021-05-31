@@ -8,6 +8,8 @@ import store from '../store';
 import defaultVert from './shaders/default.vert';
 import bufferFrag from './shaders/buffer.frag';
 import renderFrag from './shaders/render.frag';
+import boxVert from './shaders/box.vert';
+import boxFrag from './shaders/box.frag';
 
 export default new class {
   constructor() {
@@ -120,12 +122,16 @@ export default new class {
     this.camera2 = this.camera.clone();
     this.camera2.position.set(0, 0, 5);
 
-    const geom = new THREE.BoxGeometry(1);
-    const mat = new THREE.MeshNormalMaterial({
-      transparent: true,
-      opacity: 0.5,
+    const geometry = new THREE.BoxGeometry(1);
+    const material = new THREE.ShaderMaterial({
+      vertexShader: boxVert,
+      fragmentShader: boxFrag,
+      uniforms: { 
+        time: { value: 0 },
+      },
     });
-    this.box = new THREE.Mesh(geom, mat);
+
+    this.box = new THREE.Mesh(geometry, material);
 
     this.scene2.add(this.box);
   }
@@ -153,7 +159,7 @@ export default new class {
 
     this.box.rotation.x = this.time;
     this.box.rotation.y = this.time;
-    // this.box.rotation.z = this.time; 
+    this.box.material.uniforms.time.value = this.time;
     
     this.bufferObject.material.uniforms.prevFrame.value = this.read.texture;
     this.bufferObject.material.uniforms.time.value = this.time;
